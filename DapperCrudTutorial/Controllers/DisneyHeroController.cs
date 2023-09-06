@@ -24,9 +24,9 @@ namespace DapperCrudTutorial.Controllers
             
         }
 
-        // GET /<name>
+        // GET /<heroId>
         [HttpGet("{heroId}")]
-        public async Task<IActionResult> GetMarvelHero(int heroId)
+        public async Task<IActionResult> GetDisneyHero(int heroId)
         {
             try
             {
