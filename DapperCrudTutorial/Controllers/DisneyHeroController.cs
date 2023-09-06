@@ -1,13 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
-using System.Text.Json;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
+using DapperCrudTutorial.Services;
 
 namespace DapperCrudTutorial.Controllers
 {
@@ -17,11 +10,11 @@ namespace DapperCrudTutorial.Controllers
     {
      
         private readonly HttpClient _httpClient;
-        
-        public DisneyHeroController()
+
+        public DisneyHeroController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = new HttpClient();
-            
+            _httpClient = httpClientFactory.CreateClient("DisneyAPI");
+
         }
 
         // GET /<heroId>
@@ -32,7 +25,7 @@ namespace DapperCrudTutorial.Controllers
             {
                 
                 
-                var response = await _httpClient.GetAsync("https://api.disneyapi.dev/character/" + heroId);
+                var response = await _httpClient.GetAsync("character/" + heroId);
 
                 // Check if the response is successful.
                 if (response.IsSuccessStatusCode)
