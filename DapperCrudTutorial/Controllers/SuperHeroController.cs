@@ -1,7 +1,9 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using System.Net;
+
+
 
 namespace DapperCrudTutorial.Controllers
 {
@@ -33,6 +35,10 @@ namespace DapperCrudTutorial.Controllers
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             var hero = await connection.QueryAsync<SuperHero>("select * from superheroes where id = @Id", new { Id = heroId });
+            if (hero.Count() == 0)
+            {
+                return Ok("This Id does not exits");
+            }
 
             return Ok(hero);
         }
@@ -62,8 +68,14 @@ namespace DapperCrudTutorial.Controllers
         public async Task<ActionResult<List<SuperHero>>> DeleteHero(int heroId)
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            await connection.ExecuteAsync("delete from superheroes where id = @Id", new { Id = heroId });
+            var result = await connection.ExecuteAsync("delete from superheroes where id = @Id", new { Id = heroId });
+            if(result == 0)
+            {
+                return Ok("This Id does not exist.");
+
+            }
             var heroes = await connection.QueryAsync<SuperHero>("select * from superheroes");
+
             return Ok(heroes);
         }
 
